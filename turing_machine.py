@@ -39,7 +39,7 @@ def simulate_turing_machine(tape, transitions, states):
     current_state = next(state_id for state_id, info in states.items() if info['initial'])
     tape = list(tape)
     head_position = 0
-    flag = False
+    result_tape = []  # Lista para almacenar el resultado encriptado
 
     while True:
         if head_position >= len(tape):
@@ -50,26 +50,40 @@ def simulate_turing_machine(tape, transitions, states):
         if not transition:
             break
 
-        tape[head_position] = transition['write']
-        current_state = transition['to']
+        result_tape.append(transition['write'])  
 
+        current_state = transition['to']
         if transition['move'] == 'R':
             head_position += 1
         elif transition['move'] == 'L':
             head_position -= 1
 
         if states[current_state]['final']:
-            flag = True
-            return flag
+            return ''.join(result_tape)  
 
- 
-    return flag
+    return ''.join(result_tape)
 
-def process_string(input_string):
+def process_multiple_plates(input_string):
     states, transitions = load_turing_machine("turing_machine_matricula.xml")
-    is_valid = simulate_turing_machine(input_string, transitions, states)
     
-    if (is_valid):
-        return True
-    else:
-        return False
+    potential_plates = input_string.split()
+    encrypted_plates = [] 
+    plates = []
+
+    for plate in potential_plates:
+        encrypted_plate = simulate_turing_machine(plate, transitions, states)
+        if encrypted_plate:  
+            encrypted_plates.append(encrypted_plate)
+            plates.append(plate)
+
+    return encrypted_plates, plates
+
+
+# def process_string(input_string):
+#     states, transitions = load_turing_machine("turing_machine_matricula.xml")
+#     is_valid = simulate_turing_machine(input_string, transitions, states)
+    
+#     if (is_valid):
+#         return True
+#     else:
+#         return False
